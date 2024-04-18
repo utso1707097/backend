@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import userModel from "./userModel";
+import bcrypt from "bcrypt";
 
 const createUser = async(req:Request,res:Response,next:NextFunction) => {
     // console.log(req.body);
@@ -12,6 +13,9 @@ const createUser = async(req:Request,res:Response,next:NextFunction) => {
         const error = createHttpError(400, "All fields are required");
         return next(error); //global error handler
     } 
+
+    // password -> hash
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     //database call
     const user = await userModel.findOne({email});
